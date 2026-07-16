@@ -1,0 +1,22 @@
+{
+  "id": "windows-bundle-id-accepted",
+  "contract_version": 1,
+  "title": "Windows client identification: app.namequick.windows accepted (post-patch)",
+  "kind": "wire",
+  "description": "Once ALLOWED_BUNDLE_IDS includes app.namequick.windows (server patch at main.py:46, deployed for Josef's approval), a Windows request with that bundle id passes the only hard gate and reaches the handler. Clients must not assume the patch is live.",
+  "spec_refs": ["#1-client-identification"],
+  "given": {
+    "context": { "bundle_patch_deployed": true },
+    "request": {
+      "method": "POST",
+      "path": "/generate",
+      "headers": { "X-Bundle-Id": "app.namequick.windows" },
+      "body": { "contents": [ { "parts": [ { "text": "name this file" }, { "file_data": { "mime_type": "application/pdf", "file_uri": "gs://managed-bucket/uploads/sess_test_abc" } } ] } ] }
+    },
+    "response": { "status": 200, "headers": { "X-Managed-Gemini-Backend": "vertex" }, "body": { "candidates": [ { "content": { "parts": [ { "text": "{\"filename\":\"doc\",\"tags\":[],\"description\":\"\"}" } ] } } ] } }
+  },
+  "expect": {
+    "outcome": "admitted",
+    "assert": { "bundle_id_sent": "app.namequick.windows", "not_rejected": true }
+  }
+}

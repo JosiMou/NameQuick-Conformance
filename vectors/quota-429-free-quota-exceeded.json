@@ -1,0 +1,18 @@
+{
+  "id": "quota-429-free-quota-exceeded",
+  "contract_version": 1,
+  "title": "429 caller-quota reason free_quota_exceeded -> distinct state",
+  "kind": "wire",
+  "description": "Same 429 status, different reason. free_quota_exceeded means the free-tier claim allotment is used, which is a distinct user-facing state from a generic rate limit. A client that maps on status alone cannot tell these apart, so reason parsing is required.",
+  "spec_refs": ["#6-error-taxonomy", "#9-divergence-register"],
+  "given": {
+    "request": { "method": "POST", "path": "/generate", "headers": { "X-Bundle-Id": "app.namequick.windows", "X-NameQuick-Client-Token": "f51aa29bd3e8a7be0cc7586749759652" } },
+    "response": { "status": 429, "body": { "error": "Too many requests. Please try again later.", "reason": "free_quota_exceeded" } }
+  },
+  "expect": {
+    "outcome": "free_quota_exceeded",
+    "assert": { "parsed_reason": "free_quota_exceeded" },
+    "error_state": "free_allotment_used",
+    "must_not": ["conflate_with_generic_rate_limit", "silent_reroute"]
+  }
+}

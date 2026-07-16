@@ -1,0 +1,23 @@
+{
+  "id": "malformed-model-output-tolerant-ladder",
+  "contract_version": 1,
+  "title": "Invalid JSON model output -> tolerant-ingestion recovery ladder, non-debited",
+  "kind": "behavior",
+  "description": "The generate call succeeds at the HTTP layer (200) but the model text is not valid JSON against the metadata contract. The client must walk the fixed recovery ladder (one non-debited semantic retry -> filename-only degrade -> partial-JSON recovery -> fail) and must not decode straight into strict domain structs. None of these ladder steps is a new billed generate.",
+  "spec_refs": ["#5-generate-contract"],
+  "given": {
+    "context": { "path": "metadata_rename" },
+    "request": { "method": "POST", "path": "/generate", "headers": { "X-Bundle-Id": "app.namequick.windows" } },
+    "response": { "status": 200, "headers": { "X-Managed-Gemini-Model": "gemini-3.1-flash-lite" }, "body": { "candidates": [ { "content": { "parts": [ { "text": "Here you go: {\"filename\": \"2026-01 ACME invoice\", \"tags\": [\"invoice\"" } ] } } ] } }
+  },
+  "expect": {
+    "outcome": "recovered_via_ladder",
+    "assert": {
+      "tolerant_ingestion": true,
+      "ladder_order": ["semantic_retry_non_debited", "filename_only_degrade", "partial_json_recovery", "fail"],
+      "recovered_field": "filename",
+      "billed_generate_count": 1
+    },
+    "must_not": ["decode_into_strict_struct_on_first_contact", "billed_retry", "fabricate_value"]
+  }
+}

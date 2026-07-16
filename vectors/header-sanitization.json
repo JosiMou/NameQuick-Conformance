@@ -1,0 +1,30 @@
+{
+  "id": "header-sanitization",
+  "contract_version": 1,
+  "title": "Advisory header sanitizer: replace illegal chars, truncate to 128, omit empty, omit denied",
+  "kind": "behavior",
+  "description": "Every advisory/telemetry header value passes the sanitizer before being sent: trim; reject (omit) values containing /, backslash, @, or a denied substring; replace each character outside [A-Za-z0-9._:-] with '-'; truncate to 128 chars; omit if empty after processing. Each case below is an independent (input -> expected header outcome) pair.",
+  "spec_refs": ["#2-request-headers"],
+  "given": {
+    "cases": [
+      { "name": "illegal_chars_replaced", "header": "X-NameQuick-Flow", "input": "analyze with metadata!", "expected_sent": "analyze-with-metadata-" },
+      { "name": "slash_denied_omitted", "header": "X-NameQuick-Template", "input": "presets/monthly", "expected_omitted": true },
+      { "name": "at_sign_denied_omitted", "header": "X-NameQuick-Template", "input": "user@example", "expected_omitted": true },
+      { "name": "denied_fragment_secret", "header": "X-NameQuick-Operation", "input": "client_secret_probe", "expected_omitted": true },
+      { "name": "denied_fragment_cus", "header": "X-NameQuick-Operation", "input": "cus_12345", "expected_omitted": true },
+      { "name": "empty_after_trim_omitted", "header": "X-NameQuick-Flow", "input": "   ", "expected_omitted": true },
+      { "name": "truncate_to_128", "header": "X-NameQuick-Flow", "input_repeat": { "char": "a", "count": 200 }, "expected_length": 128 },
+      { "name": "allowed_passthrough", "header": "X-NameQuick-Output-Language-Source", "input": "detected_ocr:sampled", "expected_sent": "detected_ocr:sampled" }
+    ]
+  },
+  "expect": {
+    "outcome": "sanitized_per_case",
+    "assert": {
+      "allowed_charset": "^[A-Za-z0-9._:-]*$",
+      "replacement_char": "-",
+      "max_length": 128,
+      "empty_omitted": true
+    },
+    "must_not": ["send_unsanitized_value", "send_empty_advisory_header", "send_denied_fragment"]
+  }
+}

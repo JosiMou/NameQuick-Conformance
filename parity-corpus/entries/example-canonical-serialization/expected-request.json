@@ -1,0 +1,1 @@
+{"model":"gemini-3.1-flash-lite","contents":[{"parts":[{"text":"Nenne diese Datei. Antworte auf Deutsch."},{"file_data":{"mime_type":"application/pdf","file_uri":"gs://managed-bucket/uploads/sess_test_abc"}}]}],"generationConfig":{"response_mime_type":"application/json","temperature":0.2,"max_output_tokens":320}}

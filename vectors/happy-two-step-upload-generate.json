@@ -1,0 +1,45 @@
+{
+  "id": "happy-two-step-upload-generate",
+  "contract_version": 1,
+  "title": "Full happy path: start -> chunk -> poll ACTIVE -> generate with text-first parts",
+  "kind": "behavior",
+  "description": "The end-to-end managed rename flow. Nothing is prompt-inlined; the file is uploaded, polled to ACTIVE, then referenced as a file_data part with the text prompt first.",
+  "spec_refs": ["#4-two-step-upload-contract", "#5-generate-contract"],
+  "given": {
+    "context": { "backend": "vertex", "bundle_patch_deployed": true },
+    "request": {
+      "upload_start": {
+        "method": "POST",
+        "path": "/upload/start",
+        "headers": {
+          "X-Bundle-Id": "app.namequick.windows",
+          "X-Goog-Upload-Protocol": "resumable",
+          "X-Goog-Upload-Command": "start",
+          "X-Goog-Upload-Header-Content-Length": "12582912",
+          "X-Goog-Upload-Header-Content-Type": "application/pdf"
+        },
+        "body": { "file": { "display_name": "invoice-scan.pdf" } }
+      }
+    },
+    "responses": [
+      { "step": "upload_start", "status": 200, "headers": { "X-Proxy-Session-Id": "sess_test_abc", "X-Goog-Upload-Status": "active" }, "body": {} },
+      { "step": "chunk_0", "status": 308, "headers": { "X-Goog-Upload-Status": "active" } },
+      { "step": "chunk_1_final", "status": 200, "headers": { "X-Goog-Upload-Status": "final" }, "body": { "file": { "uri": "gs://managed-bucket/uploads/sess_test_abc" } } },
+      { "step": "poll_1", "status": 200, "body": { "name": "files/sess_test_abc", "uri": "gs://managed-bucket/uploads/sess_test_abc", "state": "ACTIVE" } },
+      { "step": "generate", "status": 200, "headers": { "X-Managed-Gemini-Model": "gemini-3.1-flash-lite", "X-Managed-Gemini-Backend": "vertex" }, "body": { "candidates": [ { "content": { "parts": [ { "text": "{\"filename\":\"2026-01-15 ACME invoice 4471\",\"tags\":[\"invoice\"],\"description\":\"ACME Jan invoice\"}" } ] } } ] } }
+    ]
+  },
+  "expect": {
+    "outcome": "rename_succeeded",
+    "assert": {
+      "chunk_count": 2,
+      "chunk_size_bytes": 8388608,
+      "chunks_sequential_offsets": [0, 8388608],
+      "final_chunk_command": "upload, finalize",
+      "proceeded_after_state": "ACTIVE",
+      "generate_parts_order": ["text", "file_data"],
+      "file_uri_from_finalize": "gs://managed-bucket/uploads/sess_test_abc"
+    },
+    "must_not": ["inline_base64_on_rename", "prompt_inlined_file", "file_part_before_text_part"]
+  }
+}

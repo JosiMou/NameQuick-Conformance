@@ -1,0 +1,29 @@
+{
+  "id": "upload-session-expired",
+  "contract_version": 1,
+  "title": "400 Invalid or expired upload session -> restart from /upload/start",
+  "kind": "wire",
+  "description": "Sessions expire after 3600s TTL. A chunk against an unknown/expired session returns 400. The client must restart the whole two-step flow from /upload/start.",
+  "spec_refs": ["#4-two-step-upload-contract", "#6-error-taxonomy"],
+  "given": {
+    "context": { "session_ttl_seconds": 3600 },
+    "request": {
+      "method": "POST",
+      "path": "/upload/chunk",
+      "headers": {
+        "X-Bundle-Id": "app.namequick.windows",
+        "X-Proxy-Session-Id": "sess_test_expired",
+        "X-Goog-Upload-Offset": "0",
+        "X-Goog-Upload-Command": "upload",
+        "Content-Length": "8388608"
+      }
+    },
+    "response": { "status": 400, "body": { "error": "Invalid or expired upload session" } }
+  },
+  "expect": {
+    "outcome": "session_invalid",
+    "client_action": "restart_from_upload_start",
+    "error_state": "upload_failed",
+    "must_not": ["reuse_dead_session_id", "silent_reroute"]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://namequick.app/conformance/vector.schema.json",
+  "title": "NameQuick managed-proxy conformance vector",
+  "description": "One scenario per file. Vectors are pure data: no code in this repo decides behavior. Each client implements its own runner that reads `given` fixtures, drives its client code, and asserts the `expect` block.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "contract_version", "title", "kind", "given", "expect"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable unique id, matches the filename stem.",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "contract_version": {
+      "type": "integer",
+      "description": "Contract version this vector targets. 1 = Phase A.",
+      "enum": [1]
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable one-line title."
+    },
+    "kind": {
+      "type": "string",
+      "description": "wire = fixed request/response bytes and shapes at the HTTP boundary; behavior = required client decision/output given a fixture.",
+      "enum": ["wire", "behavior"]
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional longer explanation of what the scenario proves."
+    },
+    "spec_refs": {
+      "type": "array",
+      "description": "Optional list of spec section anchors this vector exercises.",
+      "items": { "type": "string" }
+    },
+    "given": {
+      "type": "object",
+      "description": "Input fixtures: request the client would send and/or response(s) the server returns. Free-form per scenario; documented in vectors/README.md.",
+      "additionalProperties": true
+    },
+    "expect": {
+      "type": "object",
+      "description": "Required client behavior/output. A conformant client MUST satisfy every assertion here.",
+      "additionalProperties": true
+    }
+  }
+}

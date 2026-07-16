@@ -1,0 +1,28 @@
+{
+  "id": "chunk-308-continue",
+  "contract_version": 1,
+  "title": "308 on a non-final chunk means accept-and-continue",
+  "kind": "wire",
+  "description": "A non-final chunk whose offset matches returns HTTP 308 with X-Goog-Upload-Status: active. The client must treat 308 (and any 2xx) as success and send the next chunk.",
+  "spec_refs": ["#4-two-step-upload-contract"],
+  "given": {
+    "request": {
+      "method": "POST",
+      "path": "/upload/chunk",
+      "headers": {
+        "X-Bundle-Id": "app.namequick.windows",
+        "X-Proxy-Session-Id": "sess_test_abc",
+        "X-Goog-Upload-Offset": "0",
+        "X-Goog-Upload-Command": "upload",
+        "Content-Length": "8388608"
+      }
+    },
+    "response": { "status": 308, "headers": { "X-Goog-Upload-Status": "active" } }
+  },
+  "expect": {
+    "outcome": "chunk_accepted",
+    "client_action": "send_next_chunk",
+    "assert": { "next_offset": 8388608 },
+    "must_not": ["treat_308_as_error", "restart_whole_upload"]
+  }
+}

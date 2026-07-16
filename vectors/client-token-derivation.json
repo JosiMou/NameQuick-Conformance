@@ -1,0 +1,32 @@
+{
+  "id": "client-token-derivation",
+  "contract_version": 1,
+  "title": "Client-token derivation: known customerId -> exact 32-hex token",
+  "kind": "behavior",
+  "description": "The X-NameQuick-Client-Token is lowercase_hex(SHA256(\"namequick-proxy-client:\" + customerId)) truncated to the first 32 hex characters. This vector pins the exact output for a fake customer id. Verified offline: printf '%s' \"namequick-proxy-client:cus_test_0000000000\" | shasum -a 256.",
+  "spec_refs": ["#2-request-headers"],
+  "given": {
+    "algorithm": {
+      "namespace_prefix": "namequick-proxy-client:",
+      "hash": "SHA-256",
+      "encoding": "lowercase-hex",
+      "truncate_hex_chars": 32
+    },
+    "inputs": {
+      "polarCustomerId": "cus_test_0000000000"
+    },
+    "reference": {
+      "full_sha256_hex": "f51aa29bd3e8a7be0cc758674975965237f5d85ee531689dca6540762979bd95"
+    }
+  },
+  "expect": {
+    "outcome": "token_computed",
+    "assert": {
+      "header": "X-NameQuick-Client-Token",
+      "token": "f51aa29bd3e8a7be0cc7586749759652",
+      "token_length_hex": 32,
+      "raw_customer_id_never_sent": true
+    },
+    "must_not": ["send_raw_customer_id", "change_namespace_prefix", "send_full_64_hex"]
+  }
+}

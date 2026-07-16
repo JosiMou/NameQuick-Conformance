@@ -1,0 +1,29 @@
+{
+  "id": "upload-finalize-size-mismatch",
+  "contract_version": 1,
+  "title": "400 Final upload size mismatch is a fatal session",
+  "kind": "wire",
+  "description": "On finalize, if the accumulated bytes do not equal the declared session size, the proxy returns 400 with expected_size and received_bytes. The session is dead; the client aborts and must restart the upload.",
+  "spec_refs": ["#4-two-step-upload-contract", "#6-error-taxonomy"],
+  "given": {
+    "request": {
+      "method": "POST",
+      "path": "/upload/chunk",
+      "headers": {
+        "X-Bundle-Id": "app.namequick.windows",
+        "X-Proxy-Session-Id": "sess_test_abc",
+        "X-Goog-Upload-Offset": "8388608",
+        "X-Goog-Upload-Command": "upload, finalize",
+        "Content-Length": "4194304"
+      }
+    },
+    "response": { "status": 400, "body": { "error": "Final upload size does not match session metadata", "expected_size": 12582912, "received_bytes": 12582912 } }
+  },
+  "expect": {
+    "outcome": "upload_failed_fatal",
+    "client_action": "abort",
+    "error_state": "upload_failed",
+    "assert": { "restart_required": true },
+    "must_not": ["treat_as_transient_retry_same_session", "silent_reroute"]
+  }
+}

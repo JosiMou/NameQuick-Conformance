@@ -1,0 +1,19 @@
+{
+  "id": "shaper-503-traffic-circuit-open",
+  "contract_version": 1,
+  "title": "503 traffic_circuit_open -> honor Retry-After",
+  "kind": "wire",
+  "description": "When the shaper circuit is open the proxy returns 503 with error_class traffic_circuit_open, retry_after_seconds, and a Retry-After header. Transient; the client honors Retry-After.",
+  "spec_refs": ["#6-error-taxonomy"],
+  "given": {
+    "request": { "method": "POST", "path": "/generate", "headers": { "X-Bundle-Id": "app.namequick.windows" } },
+    "response": { "status": 503, "headers": { "Retry-After": "5", "Content-Type": "application/json" }, "body": { "error": "Managed Gemini is temporarily unavailable. Please try again shortly.", "error_class": "traffic_circuit_open", "retry_after_seconds": 5, "traffic_shaping_outcome": "circuit-open", "traffic_shaping_reason": "circuit_open" } }
+  },
+  "expect": {
+    "outcome": "transient_circuit_open",
+    "assert": { "parsed_error_class": "traffic_circuit_open", "honor_retry_after": true, "retry_after_seconds": 5 },
+    "client_action": "retry_after_seconds",
+    "error_state": "managed_service_unavailable_transient",
+    "must_not": ["ignore_retry_after", "silent_reroute"]
+  }
+}

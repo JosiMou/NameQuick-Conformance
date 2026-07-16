@@ -1,0 +1,18 @@
+{
+  "id": "network-error-one-transport-retry",
+  "contract_version": 1,
+  "title": "Proxy unreachable -> at most one transport retry, honest error, never silent reroute",
+  "kind": "behavior",
+  "description": "When the managed proxy is unreachable (connection refused / DNS / TLS failure) the client may perform at most one transport-level retry and then surface an honest network error. It must never silently reroute to a different provider or a BYOK key to mask the outage.",
+  "spec_refs": ["#6-error-taxonomy"],
+  "given": {
+    "request": { "method": "POST", "path": "/generate", "headers": { "X-Bundle-Id": "app.namequick.windows" } },
+    "transport": { "outcome": "connection_refused", "attempts_all_fail": true }
+  },
+  "expect": {
+    "outcome": "network_error",
+    "assert": { "max_transport_retries": 1 },
+    "error_state": "honest_network_error",
+    "must_not": ["silent_provider_reroute", "silent_byok_fallback", "unbounded_retry", "billed_retry"]
+  }
+}

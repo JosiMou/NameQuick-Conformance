@@ -1,0 +1,28 @@
+{
+  "id": "chunk-offset-mismatch-resume",
+  "contract_version": 1,
+  "title": "400 Unexpected upload offset -> resume from expected_offset, not restart",
+  "kind": "wire",
+  "description": "When the sent offset does not match what the proxy has received, it returns 400 with expected_offset as the resume anchor. A conformant client resumes from that byte offset rather than restarting the whole upload.",
+  "spec_refs": ["#4-two-step-upload-contract", "#6-error-taxonomy"],
+  "given": {
+    "request": {
+      "method": "POST",
+      "path": "/upload/chunk",
+      "headers": {
+        "X-Bundle-Id": "app.namequick.windows",
+        "X-Proxy-Session-Id": "sess_test_abc",
+        "X-Goog-Upload-Offset": "16777216",
+        "X-Goog-Upload-Command": "upload",
+        "Content-Length": "8388608"
+      }
+    },
+    "response": { "status": 400, "body": { "error": "Unexpected upload offset", "expected_offset": 8388608 } }
+  },
+  "expect": {
+    "outcome": "resume_from_expected_offset",
+    "client_action": "resume_at_byte",
+    "assert": { "resume_offset": 8388608 },
+    "must_not": ["restart_whole_upload", "treat_as_fatal_without_reading_expected_offset"]
+  }
+}

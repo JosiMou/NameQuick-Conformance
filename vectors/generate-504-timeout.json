@@ -1,0 +1,17 @@
+{
+  "id": "generate-504-timeout",
+  "contract_version": 1,
+  "title": "504 generate timeout -> transient temporary-failure",
+  "kind": "wire",
+  "description": "An upstream/generate timeout surfaces as 504. The client treats it as a transient temporary-failure state, not a permanent client error, and does not loop or reroute.",
+  "spec_refs": ["#6-error-taxonomy"],
+  "given": {
+    "request": { "method": "POST", "path": "/generate", "headers": { "X-Bundle-Id": "app.namequick.windows" } },
+    "response": { "status": 504, "body": {} }
+  },
+  "expect": {
+    "outcome": "timeout",
+    "error_state": "temporary_failure",
+    "must_not": ["silent_reroute", "billed_retry"]
+  }
+}

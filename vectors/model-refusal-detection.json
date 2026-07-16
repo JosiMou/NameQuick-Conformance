@@ -1,0 +1,18 @@
+{
+  "id": "model-refusal-detection",
+  "contract_version": 1,
+  "title": "Model refusal detected as a failure, not a filename",
+  "kind": "behavior",
+  "description": "A 200 whose candidate carries a safety/refusal finishReason (or a refusal in place of the expected JSON) must be detected as a failure and routed to an honest state, never used as a filename. Detection keys on the structured finishReason and the ingestion ladder failing, not on English keyword parsing of the text.",
+  "spec_refs": ["#5-generate-contract"],
+  "given": {
+    "context": { "path": "metadata_rename" },
+    "request": { "method": "POST", "path": "/generate", "headers": { "X-Bundle-Id": "app.namequick.windows" } },
+    "response": { "status": 200, "headers": { "X-Managed-Gemini-Model": "gemini-3.1-flash-lite" }, "body": { "candidates": [ { "finishReason": "SAFETY", "content": { "parts": [] } } ] } }
+  },
+  "expect": {
+    "outcome": "model_refusal",
+    "error_state": "model_refused",
+    "must_not": ["use_refusal_text_as_filename", "fabricate_value", "keyword_parse_english_for_refusal"]
+  }
+}

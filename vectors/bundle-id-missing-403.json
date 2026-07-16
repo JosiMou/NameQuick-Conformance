@@ -1,0 +1,17 @@
+{
+  "id": "bundle-id-missing-403",
+  "contract_version": 1,
+  "title": "Missing X-Bundle-Id -> 403 with exact Unauthorized body",
+  "kind": "wire",
+  "description": "The bundle-id header is the only hard gate. Absent or empty, the proxy returns 403 with the exact Unauthorized body. The details string echoes the received value (None when the header is absent).",
+  "spec_refs": ["#1-client-identification", "#6-error-taxonomy"],
+  "given": {
+    "request": { "method": "POST", "path": "/generate", "headers": {}, "body": { "contents": [] } },
+    "response": { "status": 403, "body": { "error": "Unauthorized", "details": "Invalid bundle ID: None" } }
+  },
+  "expect": {
+    "outcome": "unauthorized",
+    "error_state": "managed_service_not_authorized",
+    "must_not": ["blind_retry", "silent_reroute"]
+  }
+}

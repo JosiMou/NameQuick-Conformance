@@ -1,0 +1,20 @@
+{
+  "id": "poll-failed-abort",
+  "contract_version": 1,
+  "title": "Poll: FAILED (any non-ACTIVE terminal state) aborts",
+  "kind": "behavior",
+  "description": "A FAILED file state, or any state other than ACTIVE/PROCESSING, aborts the flow with an honest failure. The client must not proceed to generate.",
+  "spec_refs": ["#4-two-step-upload-contract"],
+  "given": {
+    "request": { "method": "GET", "path": "/file/sess_test_abc", "headers": { "X-Bundle-Id": "app.namequick.windows" } },
+    "responses": [
+      { "step": "poll_1", "status": 200, "body": { "state": "PROCESSING" } },
+      { "step": "poll_2", "status": 200, "body": { "state": "FAILED" } }
+    ]
+  },
+  "expect": {
+    "outcome": "abort",
+    "error_state": "file_processing_failed",
+    "must_not": ["proceed_to_generate", "keep_polling_after_failed"]
+  }
+}

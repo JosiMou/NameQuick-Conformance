@@ -1,0 +1,19 @@
+{
+  "id": "poll-exhaustion-timeout",
+  "contract_version": 1,
+  "title": "Poll: 24 PROCESSING attempts -> timeout",
+  "kind": "behavior",
+  "description": "If the file never reaches ACTIVE within the 24-attempt budget (~48s at 2.0s intervals), the client stops and surfaces a timeout error. It must not poll forever.",
+  "spec_refs": ["#4-two-step-upload-contract"],
+  "given": {
+    "context": { "poll_max_attempts": 24, "poll_interval_seconds": 2.0 },
+    "request": { "method": "GET", "path": "/file/sess_test_abc", "headers": { "X-Bundle-Id": "app.namequick.windows" } },
+    "responses_repeat": { "status": 200, "body": { "state": "PROCESSING" }, "count": 24 }
+  },
+  "expect": {
+    "outcome": "timeout",
+    "error_state": "file_processing_timeout",
+    "assert": { "attempts_used": 24 },
+    "must_not": ["poll_indefinitely", "proceed_to_generate"]
+  }
+}

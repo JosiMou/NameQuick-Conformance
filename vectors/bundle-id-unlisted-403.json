@@ -1,0 +1,18 @@
+{
+  "id": "bundle-id-unlisted-403",
+  "contract_version": 1,
+  "title": "Unlisted bundle id -> 403 with exact Unauthorized body",
+  "kind": "wire",
+  "description": "A bundle id not in ALLOWED_BUNDLE_IDS is rejected 403. This is also the pre-patch state for a Windows build: app.namequick.windows is unlisted until the server patch deploys, so the client must surface an honest 'not available for this build yet' state.",
+  "spec_refs": ["#1-client-identification", "#6-error-taxonomy"],
+  "given": {
+    "context": { "bundle_patch_deployed": false },
+    "request": { "method": "POST", "path": "/generate", "headers": { "X-Bundle-Id": "app.namequick.windows" }, "body": { "contents": [] } },
+    "response": { "status": 403, "body": { "error": "Unauthorized", "details": "Invalid bundle ID: app.namequick.windows" } }
+  },
+  "expect": {
+    "outcome": "unauthorized",
+    "error_state": "managed_service_not_available_for_build",
+    "must_not": ["blind_retry_loop", "silent_reroute", "assume_patch_deployed"]
+  }
+}

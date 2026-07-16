@@ -1,0 +1,18 @@
+{
+  "id": "quota-429-rate-limited",
+  "contract_version": 1,
+  "title": "429 caller-quota reason rate_limited -> parse reason, back off",
+  "kind": "wire",
+  "description": "A caller-quota rejection returns 429 with a structured reason. A conformant client parses reason=rate_limited and treats it as a transient rate-limit state. No Retry-After header is guaranteed on this body.",
+  "spec_refs": ["#6-error-taxonomy"],
+  "given": {
+    "request": { "method": "POST", "path": "/generate", "headers": { "X-Bundle-Id": "app.namequick.windows", "X-NameQuick-Client-Token": "f51aa29bd3e8a7be0cc7586749759652" } },
+    "response": { "status": 429, "body": { "error": "Too many requests. Please try again later.", "reason": "rate_limited" } }
+  },
+  "expect": {
+    "outcome": "rate_limited",
+    "assert": { "parsed_reason": "rate_limited" },
+    "error_state": "rate_limited_transient",
+    "must_not": ["map_status_only_without_reason", "silent_reroute"]
+  }
+}

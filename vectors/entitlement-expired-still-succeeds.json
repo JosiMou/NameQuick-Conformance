@@ -1,0 +1,26 @@
+{
+  "id": "entitlement-expired-still-succeeds",
+  "contract_version": 1,
+  "title": "Expired entitlement token -> request MUST still succeed (observe-only in v1)",
+  "kind": "behavior",
+  "description": "In v1 = Phase A the proxy's nqe1 verification is observe-only and fail-open. A request carrying an expired X-NameQuick-Entitlement token (exp far in the past, beyond the 300s skew) must still be processed normally. The client must not fail, retry, or degrade the request because the token is expired, absent, or rejected.",
+  "spec_refs": ["#3-entitlement-token"],
+  "given": {
+    "context": { "phase": "A", "entitlement_verification": "observe_only_fail_open", "clock_skew_seconds": 300 },
+    "request": {
+      "method": "POST",
+      "path": "/generate",
+      "headers": {
+        "X-Bundle-Id": "app.namequick.windows",
+        "X-NameQuick-Entitlement": "nqe1.eyJraWQiOiJrMSIsInN1YiI6ImN1c190ZXN0XzAwMDAwMDAwMDAiLCJrbmQiOiJzdWJzY3JpcHRpb24iLCJlbnYiOiJwcm9kdWN0aW9uIiwiaWF0IjoxMCwiZXhwIjoyMH0.deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+      },
+      "body": { "contents": [ { "parts": [ { "text": "name this" }, { "file_data": { "mime_type": "application/pdf", "file_uri": "gs://managed-bucket/uploads/sess_test_abc" } } ] } ] }
+    },
+    "response": { "status": 200, "headers": { "X-Managed-Gemini-Model": "gemini-3.1-flash-lite" }, "body": { "candidates": [ { "content": { "parts": [ { "text": "{\"filename\":\"doc\",\"tags\":[],\"description\":\"\"}" } ] } } ] } }
+  },
+  "expect": {
+    "outcome": "rename_succeeded",
+    "assert": { "request_not_failed_over_entitlement": true },
+    "must_not": ["fail_on_expired_entitlement", "retry_because_entitlement", "degrade_because_entitlement", "require_entitlement_header"]
+  }
+}

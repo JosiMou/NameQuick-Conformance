@@ -1,0 +1,19 @@
+{
+  "id": "shaper-429-traffic-rejected-retry-after",
+  "contract_version": 1,
+  "title": "429 traffic_rejected -> honor Retry-After",
+  "kind": "wire",
+  "description": "The traffic shaper rejects admission with 429, error_class traffic_rejected, retry_after_seconds in the body, and a matching Retry-After header. A conformant client honors Retry-After and retries after the delay. The current Mac client ignores Retry-After (divergence D2).",
+  "spec_refs": ["#6-error-taxonomy", "#9-divergence-register"],
+  "given": {
+    "request": { "method": "POST", "path": "/generate", "headers": { "X-Bundle-Id": "app.namequick.windows" } },
+    "response": { "status": 429, "headers": { "Retry-After": "3", "Content-Type": "application/json" }, "body": { "error": "Managed Gemini is busy. Please try again shortly.", "error_class": "traffic_rejected", "retry_after_seconds": 3, "traffic_shaping_outcome": "queue-timeout", "traffic_shaping_reason": "queue_full" } }
+  },
+  "expect": {
+    "outcome": "transient_shaper_reject",
+    "assert": { "parsed_error_class": "traffic_rejected", "honor_retry_after": true, "retry_after_seconds": 3 },
+    "client_action": "retry_after_seconds",
+    "error_state": "managed_service_busy_transient",
+    "must_not": ["ignore_retry_after", "silent_reroute"]
+  }
+}

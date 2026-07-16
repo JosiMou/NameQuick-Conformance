@@ -1,0 +1,17 @@
+{
+  "id": "empty-candidates-empty-response",
+  "contract_version": 1,
+  "title": "Empty candidates -> emptyResponse error",
+  "kind": "behavior",
+  "description": "A 200 with no candidates (or an empty candidates array) yields no usable output. The client surfaces an emptyResponse error rather than proceeding with an empty filename.",
+  "spec_refs": ["#5-generate-contract"],
+  "given": {
+    "request": { "method": "POST", "path": "/generate", "headers": { "X-Bundle-Id": "app.namequick.windows" } },
+    "response": { "status": 200, "headers": { "X-Managed-Gemini-Model": "gemini-3.1-flash-lite" }, "body": { "candidates": [] } }
+  },
+  "expect": {
+    "outcome": "empty_response",
+    "error_state": "empty_response",
+    "must_not": ["proceed_with_empty_filename", "fabricate_value"]
+  }
+}

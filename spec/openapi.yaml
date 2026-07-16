@@ -1,0 +1,602 @@
+openapi: 3.1.0
+info:
+  title: NameQuick Managed Proxy Client Surface
+  version: "1"
+  description: >
+    Client-facing surface of the NameQuick managed Gemini proxy (namequick-gemini-proxy)
+    plus the polar-proxy credit-state endpoint. contract_version 1 = Phase A.
+    Authoritative prose: spec/managed-proxy-client-spec.md. This document describes
+    only the request/response shapes a client must produce and tolerate; it does not
+    describe server-internal behavior (model chain, quota counters, traffic shaper state).
+    Where the audited ground truth is silent, fields are marked accordingly rather than invented.
+  x-contract-version: 1
+  license:
+    name: Proprietary (NameQuick internal)
+
+servers:
+  - url: https://gemini-proxy.invalid
+    description: >
+      Managed Gemini proxy base URL (placeholder host; real host injected by client config).
+  - url: https://polar-proxy.invalid
+    description: >
+      Licensing-side polar-proxy base URL (placeholder host). Serves the credit-state endpoint only.
+
+tags:
+  - name: gemini-proxy
+    description: Managed inference proxy. Bundle-id gated.
+  - name: polar-proxy
+    description: Licensing-side credit-state read.
+
+security:
+  - BundleIdAuth: []
+
+components:
+  securitySchemes:
+    BundleIdAuth:
+      type: apiKey
+      in: header
+      name: X-Bundle-Id
+      description: >
+        The only hard authentication gate on gemini-proxy. Value must be a registered
+        bundle identifier (app.namequick.NameQuick for macOS, app.namequick.windows for
+        Windows). Missing/empty/unlisted -> 403. Not a secret; forging it only moves the
+        caller into the NameQuick quota bucket, which per-IP caps still bound.
+  parameters:
+    AppVersion:
+      name: X-App-Version
+      in: header
+      required: false
+      schema: { type: string }
+    BuildNumber:
+      name: X-Build-Number
+      in: header
+      required: false
+      schema: { type: string }
+    RequestId:
+      name: X-Request-Id
+      in: header
+      required: false
+      schema: { type: string }
+    CorrelationId:
+      name: X-Correlation-Id
+      in: header
+      required: false
+      schema: { type: string }
+    ClientToken:
+      name: X-NameQuick-Client-Token
+      in: header
+      required: false
+      description: >
+        Advisory quota principal. lowercase_hex(SHA256("namequick-proxy-client:"+customerId))[0:32].
+        Opaque; never the raw customer id.
+      schema:
+        type: string
+        pattern: '^[0-9a-f]{32}$'
+    Operation:
+      name: X-NameQuick-Operation
+      in: header
+      required: false
+      schema:
+        type: string
+        pattern: '^[A-Za-z0-9._:-]{0,128}$'
+    Billing:
+      name: X-NameQuick-Billing
+      in: header
+      required: false
+      description: 'free:<reason> | debit:<units> | per_request. Advisory; never trusted for billing.'
+      schema:
+        type: string
+        pattern: '^[A-Za-z0-9._:-]{0,128}$'
+    Flow:
+      name: X-NameQuick-Flow
+      in: header
+      required: false
+      schema:
+        type: string
+        pattern: '^[A-Za-z0-9._:-]{0,128}$'
+    Template:
+      name: X-NameQuick-Template
+      in: header
+      required: false
+      schema:
+        type: string
+        pattern: '^[A-Za-z0-9._:-]{0,128}$'
+    OutputLanguage:
+      name: X-NameQuick-Output-Language
+      in: header
+      required: false
+      schema:
+        type: string
+        pattern: '^[A-Za-z0-9._:-]{0,128}$'
+    OutputLanguageSource:
+      name: X-NameQuick-Output-Language-Source
+      in: header
+      required: false
+      description: 'preferred_language | detected_<source> | fallback_<reason>'
+      schema:
+        type: string
+        pattern: '^[A-Za-z0-9._:-]{0,128}$'
+    Entitlement:
+      name: X-NameQuick-Entitlement
+      in: header
+      required: false
+      description: >
+        Forward-compatible entitlement token, format nqe1.<b64url>.<hexsig>. Observe-only in v1:
+        the proxy never rejects on its absence, malformation, or expiry. Clients MUST tolerate
+        its absence and MUST NOT fail a request over it.
+      schema:
+        type: string
+        pattern: '^nqe1\.[A-Za-z0-9_-]+\.[0-9a-f]+$'
+
+  headers:
+    ProxySessionId:
+      description: Proxy-issued upload session handle. REQUIRED in the /upload/start response.
+      required: true
+      schema: { type: string }
+    GoogUploadStatus:
+      description: 'Upload status: active | final.'
+      schema:
+        type: string
+        enum: [active, final]
+    GoogUploadSizeReceived:
+      description: Bytes received so far.
+      schema: { type: string }
+    RetryAfter:
+      description: Seconds to wait before retrying. Clients MUST honor this on 429/503.
+      schema: { type: integer, minimum: 1 }
+    ManagedGeminiModel:
+      description: Model that produced the response.
+      schema: { type: string }
+    ManagedGeminiAttempts:
+      description: Number of model attempts.
+      schema: { type: string }
+    ManagedGeminiBackend:
+      description: Backend discriminator (developer_api | vertex).
+      schema: { type: string }
+    ManagedGeminiEndpointFamily:
+      description: Endpoint family discriminator.
+      schema: { type: string }
+
+  schemas:
+    GeneratePart:
+      description: A single content part. Exactly one of text | file_data | inline_data.
+      type: object
+      properties:
+        text:
+          type: string
+        file_data:
+          type: object
+          properties:
+            mime_type: { type: string }
+            file_uri:
+              type: string
+              description: 'In Vertex mode MUST be a gs:// URI.'
+          required: [mime_type, file_uri]
+        inline_data:
+          type: object
+          description: >
+            Accepted by the proxy but NOT used on the managed rename path (no inline base64).
+          properties:
+            mime_type: { type: string }
+            data: { type: string }
+          required: [mime_type, data]
+    GenerateRequest:
+      type: object
+      description: >
+        Only these top-level keys are forwarded. 'model' is advisory and ignored (server owns
+        the model chain). Any other top-level key, and any proxyTelemetry envelope, is dropped.
+      properties:
+        model:
+          type: string
+          description: Advisory only; ignored by the proxy.
+        contents:
+          type: array
+          items:
+            type: object
+            properties:
+              parts:
+                type: array
+                items: { $ref: '#/components/schemas/GeneratePart' }
+        tools:
+          type: array
+          items: { type: object }
+        toolConfig:
+          type: object
+        safetySettings:
+          type: array
+          items: { type: object }
+        systemInstruction:
+          type: object
+        generationConfig:
+          type: [object, "null"]
+          description: >
+            camelCase and snake_case both accepted on read. Vertex strips thinkingConfig.
+            Rename metadata path sets response_mime_type application/json, low temperature,
+            max_output_tokens, and a responseSchema.
+        cachedContent:
+          type: object
+        labels:
+          type: object
+          description: Vertex only.
+      required: [contents]
+    GenerateContentResponse:
+      type: object
+      description: >
+        Upstream generateContent body, verbatim. Standard candidates/parts shape; the proxy
+        adds no envelope. Shape shown here is illustrative, not exhaustive.
+      properties:
+        candidates:
+          type: array
+          items:
+            type: object
+            properties:
+              content:
+                type: object
+                properties:
+                  parts:
+                    type: array
+                    items: { type: object }
+              finishReason: { type: string }
+        usageMetadata:
+          type: object
+    UploadStartRequest:
+      type: object
+      properties:
+        file:
+          type: object
+          properties:
+            display_name: { type: string }
+          required: [display_name]
+      required: [file]
+    UploadFinalResponse:
+      type: object
+      properties:
+        file:
+          type: object
+          properties:
+            uri:
+              type: string
+              description: 'e.g. gs://<bucket>/uploads/<session_id> (Vertex) or Files API uri.'
+          required: [uri]
+      required: [file]
+    FileStateResponse:
+      type: object
+      properties:
+        name: { type: string }
+        uri: { type: string }
+        state:
+          type: string
+          enum: [PROCESSING, ACTIVE, FAILED]
+      required: [state]
+    CustomerState:
+      type: object
+      properties:
+        activeMeters:
+          type: array
+          items: { $ref: '#/components/schemas/CustomerMeter' }
+      required: [activeMeters]
+    CustomerMeter:
+      type: object
+      description: >
+        Additional fields exist on the wire; only the client-load-bearing ones are modeled.
+      properties:
+        creditedUnits: { type: number }
+        consumedUnits: { type: number }
+        balance: { type: number }
+      required: [creditedUnits, consumedUnits, balance]
+    UnauthorizedError:
+      type: object
+      properties:
+        error: { type: string, const: Unauthorized }
+        details: { type: string, description: 'e.g. "Invalid bundle ID: <value>"' }
+      required: [error, details]
+    InvalidJsonError:
+      type: object
+      properties:
+        error: { type: string, const: Invalid JSON body }
+      required: [error]
+    UnexpectedOffsetError:
+      type: object
+      properties:
+        error: { type: string, const: Unexpected upload offset }
+        expected_offset:
+          type: integer
+          description: Resume anchor. Client resumes from this byte offset.
+      required: [error, expected_offset]
+    SizeMismatchError:
+      type: object
+      properties:
+        error: { type: string, const: Final upload size does not match session metadata }
+        expected_size: { type: integer }
+        received_bytes: { type: integer }
+      required: [error, expected_size, received_bytes]
+    InvalidSessionError:
+      type: object
+      properties:
+        error: { type: string, const: Invalid or expired upload session }
+      required: [error]
+    AlreadyFinalizedError:
+      type: object
+      properties:
+        error: { type: string, const: Upload session already finalized }
+      required: [error]
+    FileNotFoundError:
+      type: object
+      properties:
+        error: { type: string, const: File not found }
+      required: [error]
+    CallerQuotaError:
+      type: object
+      description: 429 caller-quota rejection. Clients MUST parse 'reason'.
+      properties:
+        error: { type: string, const: Too many requests. Please try again later. }
+        reason:
+          type: string
+          enum: [rate_limited, free_quota_exceeded]
+      required: [error, reason]
+    TrafficShaperError:
+      type: object
+      description: 429/503 traffic-shaper rejection. Retry-After header accompanies. Clients MUST honor it.
+      properties:
+        error: { type: string }
+        error_class:
+          type: string
+          enum: [traffic_rejected, traffic_circuit_open]
+        retry_after_seconds: { type: integer, minimum: 1 }
+        traffic_shaping_outcome: { type: string }
+        traffic_shaping_reason: { type: string }
+      required: [error, error_class, retry_after_seconds]
+    GenerateFailedError:
+      type: object
+      description: 502 - all model attempts failed. Honest provider-outage state.
+      properties:
+        error: { type: string, const: Managed Gemini request failed }
+        error_class:
+          type: string
+          description: One of the error_class vocabulary; commonly network_error/upstream_transient.
+        attempted_models:
+          type: array
+          items: { type: string }
+        details: { type: string }
+      required: [error, error_class, attempted_models]
+
+paths:
+  /generate:
+    post:
+      tags: [gemini-proxy]
+      operationId: generate
+      summary: Managed generateContent
+      description: >
+        One-shot for billing. Server owns the model chain and credentials. Text part first,
+        file_data part second on the rename path.
+      parameters:
+        - $ref: '#/components/parameters/AppVersion'
+        - $ref: '#/components/parameters/BuildNumber'
+        - $ref: '#/components/parameters/RequestId'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/ClientToken'
+        - $ref: '#/components/parameters/Operation'
+        - $ref: '#/components/parameters/Billing'
+        - $ref: '#/components/parameters/Flow'
+        - $ref: '#/components/parameters/Template'
+        - $ref: '#/components/parameters/OutputLanguage'
+        - $ref: '#/components/parameters/OutputLanguageSource'
+        - $ref: '#/components/parameters/Entitlement'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/GenerateRequest' }
+      responses:
+        '200':
+          description: Upstream generateContent body, verbatim.
+          headers:
+            X-Managed-Gemini-Model: { $ref: '#/components/headers/ManagedGeminiModel' }
+            X-Managed-Gemini-Attempts: { $ref: '#/components/headers/ManagedGeminiAttempts' }
+            X-Managed-Gemini-Backend: { $ref: '#/components/headers/ManagedGeminiBackend' }
+            X-Managed-Gemini-Endpoint-Family: { $ref: '#/components/headers/ManagedGeminiEndpointFamily' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GenerateContentResponse' }
+        '400':
+          description: Invalid JSON body, or invalid_vertex_file_reference.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InvalidJsonError' }
+        '403':
+          description: Bundle-id gate failed.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnauthorizedError' }
+        '429':
+          description: Caller-quota (reason) OR traffic-shaper (error_class + Retry-After).
+          headers:
+            Retry-After: { $ref: '#/components/headers/RetryAfter' }
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/CallerQuotaError'
+                  - $ref: '#/components/schemas/TrafficShaperError'
+        '502':
+          description: All model attempts failed (provider outage).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GenerateFailedError' }
+        '503':
+          description: Traffic-shaper circuit open.
+          headers:
+            Retry-After: { $ref: '#/components/headers/RetryAfter' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TrafficShaperError' }
+        '504':
+          description: Upstream/generate timeout.
+        '500':
+          description: Proxy internal error.
+  /upload/start:
+    post:
+      tags: [gemini-proxy]
+      operationId: uploadStart
+      summary: Begin resumable upload
+      parameters:
+        - name: X-Goog-Upload-Protocol
+          in: header
+          required: true
+          schema: { type: string, const: resumable }
+        - name: X-Goog-Upload-Command
+          in: header
+          required: true
+          schema: { type: string, const: start }
+        - name: X-Goog-Upload-Header-Content-Length
+          in: header
+          required: true
+          schema: { type: string }
+        - name: X-Goog-Upload-Header-Content-Type
+          in: header
+          required: true
+          schema: { type: string }
+        - $ref: '#/components/parameters/ClientToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UploadStartRequest' }
+      responses:
+        '200':
+          description: Session started. X-Proxy-Session-Id REQUIRED.
+          headers:
+            X-Proxy-Session-Id: { $ref: '#/components/headers/ProxySessionId' }
+            X-Goog-Upload-Status: { $ref: '#/components/headers/GoogUploadStatus' }
+            X-Goog-Upload-Size-Received: { $ref: '#/components/headers/GoogUploadSizeReceived' }
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Vertex: {}. developer_api: Files API start body.'
+        '403':
+          description: Bundle-id gate failed.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnauthorizedError' }
+        '429':
+          description: Upload quota exceeded.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CallerQuotaError' }
+  /upload/chunk:
+    post:
+      tags: [gemini-proxy]
+      operationId: uploadChunk
+      summary: Send a chunk / finalize
+      description: >
+        8 MB chunks, strictly sequential offsets. Non-final match -> 308 (accept, continue).
+        Final match -> 200 with file.uri.
+      parameters:
+        - name: X-Proxy-Session-Id
+          in: header
+          required: true
+          schema: { type: string }
+        - name: X-Goog-Upload-Offset
+          in: header
+          required: true
+          schema: { type: integer, minimum: 0 }
+        - name: X-Goog-Upload-Command
+          in: header
+          required: true
+          description: '"upload" for non-final, "upload, finalize" for the final chunk.'
+          schema: { type: string }
+        - name: Content-Length
+          in: header
+          required: true
+          schema: { type: integer }
+        - $ref: '#/components/parameters/ClientToken'
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Final chunk accepted and finalized.
+          headers:
+            X-Goog-Upload-Status: { $ref: '#/components/headers/GoogUploadStatus' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UploadFinalResponse' }
+        '308':
+          description: Non-final chunk accepted; continue with the next chunk.
+          headers:
+            X-Goog-Upload-Status: { $ref: '#/components/headers/GoogUploadStatus' }
+        '400':
+          description: >
+            Offset mismatch (expected_offset) | size mismatch (expected_size) |
+            invalid/expired session | already finalized.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/UnexpectedOffsetError'
+                  - $ref: '#/components/schemas/SizeMismatchError'
+                  - $ref: '#/components/schemas/InvalidSessionError'
+                  - $ref: '#/components/schemas/AlreadyFinalizedError'
+        '403':
+          description: Bundle-id gate failed.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnauthorizedError' }
+  /file/{fileId}:
+    get:
+      tags: [gemini-proxy]
+      operationId: getFileState
+      summary: Poll file processing state
+      description: 'Client poll policy: 24 attempts, 2.0s apart. ACTIVE -> proceed; PROCESSING -> continue; other -> abort.'
+      parameters:
+        - name: fileId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: File state.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/FileStateResponse' }
+        '403':
+          description: Bundle-id gate failed -> client treats as authFailed.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnauthorizedError' }
+        '404':
+          description: File not found.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/FileNotFoundError' }
+  /customers/{customerId}/state:
+    get:
+      tags: [polar-proxy]
+      operationId: getCustomerState
+      summary: Read customer credit state
+      description: >
+        polar-proxy (licensing side). Returns activeMeters with credit balances. Freshness TTL 300s.
+        429 -> honor nextAllowedSyncAt (Retry-After + jitter). Offline -> fail closed.
+      security: []
+      servers:
+        - url: https://polar-proxy.invalid
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Customer state incl. activeMeters.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CustomerState' }
+        '429':
+          description: Rate limited. Honor Retry-After.
+          headers:
+            Retry-After: { $ref: '#/components/headers/RetryAfter' }

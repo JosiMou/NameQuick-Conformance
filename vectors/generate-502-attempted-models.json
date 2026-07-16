@@ -1,0 +1,18 @@
+{
+  "id": "generate-502-attempted-models",
+  "contract_version": 1,
+  "title": "502 Managed Gemini request failed -> honest provider-outage state",
+  "kind": "wire",
+  "description": "When every model in the chain fails (network/upstream), the proxy returns 502 with error_class and attempted_models. The client surfaces an honest provider-outage state and must not silently reroute to another provider or a BYOK key.",
+  "spec_refs": ["#6-error-taxonomy"],
+  "given": {
+    "request": { "method": "POST", "path": "/generate", "headers": { "X-Bundle-Id": "app.namequick.windows" } },
+    "response": { "status": 502, "body": { "error": "Managed Gemini request failed", "error_class": "network_error", "attempted_models": ["gemini-3.1-flash-lite", "gemini-3-flash-preview", "gemini-2.5-flash"], "details": "Generate budget exhausted" } }
+  },
+  "expect": {
+    "outcome": "provider_outage",
+    "assert": { "parsed_error_class": "network_error", "attempted_models_present": true },
+    "error_state": "honest_provider_outage",
+    "must_not": ["silent_provider_reroute", "silent_byok_fallback", "billed_retry"]
+  }
+}

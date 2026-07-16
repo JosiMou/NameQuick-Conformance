@@ -1,0 +1,27 @@
+{
+  "id": "upload-already-finalized",
+  "contract_version": 1,
+  "title": "400 Upload session already finalized -> stop chunking",
+  "kind": "wire",
+  "description": "Sending a chunk after the session was finalized returns 400. The client must stop chunking and move on to poll/generate with the uri it already has.",
+  "spec_refs": ["#4-two-step-upload-contract", "#6-error-taxonomy"],
+  "given": {
+    "request": {
+      "method": "POST",
+      "path": "/upload/chunk",
+      "headers": {
+        "X-Bundle-Id": "app.namequick.windows",
+        "X-Proxy-Session-Id": "sess_test_abc",
+        "X-Goog-Upload-Offset": "8388608",
+        "X-Goog-Upload-Command": "upload, finalize",
+        "Content-Length": "8388608"
+      }
+    },
+    "response": { "status": 400, "body": { "error": "Upload session already finalized" } }
+  },
+  "expect": {
+    "outcome": "already_finalized",
+    "client_action": "stop_chunking",
+    "must_not": ["resend_chunks", "restart_whole_upload"]
+  }
+}

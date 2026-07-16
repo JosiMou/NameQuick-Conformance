@@ -1,0 +1,22 @@
+{
+  "id": "poll-processing-then-active",
+  "contract_version": 1,
+  "title": "Poll: PROCESSING repeats, then ACTIVE proceeds",
+  "kind": "behavior",
+  "description": "After finalize the file may still be PROCESSING. The client polls GET /file/{id} up to 24 times, 2.0s apart, continuing on PROCESSING and proceeding to generate on ACTIVE.",
+  "spec_refs": ["#4-two-step-upload-contract"],
+  "given": {
+    "context": { "poll_max_attempts": 24, "poll_interval_seconds": 2.0 },
+    "request": { "method": "GET", "path": "/file/sess_test_abc", "headers": { "X-Bundle-Id": "app.namequick.windows" } },
+    "responses": [
+      { "step": "poll_1", "status": 200, "body": { "state": "PROCESSING" } },
+      { "step": "poll_2", "status": 200, "body": { "state": "PROCESSING" } },
+      { "step": "poll_3", "status": 200, "body": { "state": "ACTIVE", "uri": "gs://managed-bucket/uploads/sess_test_abc" } }
+    ]
+  },
+  "expect": {
+    "outcome": "proceed_to_generate",
+    "assert": { "attempts_used": 3, "proceeded_after_state": "ACTIVE" },
+    "must_not": ["proceed_while_processing", "exceed_max_attempts"]
+  }
+}

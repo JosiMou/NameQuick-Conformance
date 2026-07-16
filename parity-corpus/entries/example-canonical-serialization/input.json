@@ -1,0 +1,8 @@
+{
+  "description": "Self-evident structural example. Not a real Mac rename prompt. Exercises canonical serialization: explicit key order, compact whitespace, literal UTF-8, integer number form, text-part-before-file-part.",
+  "file": { "display_name": "beleg.pdf", "mime_type": "application/pdf", "size_bytes": 12582912 },
+  "resolved_output_language": "de",
+  "resolved_output_language_source": "preferred_language",
+  "prompt_text": "Nenne diese Datei. Antworte auf Deutsch.",
+  "file_uri": "gs://managed-bucket/uploads/sess_test_abc"
+}
