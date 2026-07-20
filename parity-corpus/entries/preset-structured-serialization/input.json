@@ -1,0 +1,13 @@
+{
+  "description": "Preset-shaped prompt (CAR-2252): a selected Preset's structured recipe (slot order + separator + example) is rendered into the prompt instruction text, then the output-language directive is appended mechanically (G2). Exercises that a preset materially changes the /generate request bytes while staying byte-parity-locked across clients. One-shot model-driven only: no client-side verification of the model's output.",
+  "file": { "display_name": "beleg.pdf", "mime_type": "application/pdf", "size_bytes": 12582912 },
+  "preset": {
+    "slots": ["{date}", "{vendor}", "{type}", "{amount}"],
+    "separator": " ",
+    "example": "2026-07-12 Bauhaus Rechnung 482,10 EUR"
+  },
+  "resolved_output_language": "de",
+  "resolved_output_language_source": "preferred_language",
+  "language_directive": "Respond in German.",
+  "file_uri": "gs://managed-bucket/uploads/sess_preset_de"
+}
