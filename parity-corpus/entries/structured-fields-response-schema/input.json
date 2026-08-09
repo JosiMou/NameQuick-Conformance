@@ -1,0 +1,13 @@
+{
+  "description": "Structured-Preset response contract: the structured lane attaches a declared `responseSchema` so the model can answer with per-field values and, when it cannot determine a field, a null filename plus the ids in `missing_fields`. This entry pins the schema bytes, so `prompt_text` is kept minimal (the compiled Preset prompt has its own byte gates in preset_prompt). The field ids are deliberately NOT in alphabetical order — a schema built from a serde_json::Value (a BTreeMap) would sort them, and both the contract property order and the field order would drift.",
+  "file": { "display_name": "beleg.pdf", "mime_type": "application/pdf", "size_bytes": 12582912 },
+  "preset": {
+    "kind": "structured",
+    "field_ids": ["vendor", "amount", "date"]
+  },
+  "resolved_output_language": "de",
+  "resolved_output_language_source": "preferred_language",
+  "language_directive": "Respond in German.",
+  "prompt_text": "Suggest a clear, human-readable filename for the attached document.",
+  "file_uri": "gs://managed-bucket/uploads/sess_structured_de"
+}

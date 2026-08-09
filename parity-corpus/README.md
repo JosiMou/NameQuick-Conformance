@@ -18,6 +18,16 @@ Each entry is a directory `entries/<entry-id>/` containing:
 - `expected-request.json` — the canonical `/generate` request body the client must produce, serialized with the canonical rules below. This is the byte-exact expected output.
 - `expected-request.sha256` — the SHA-256 of the exact bytes of `expected-request.json`, lowercase hex. This is the gate value.
 
+## The corpus is append-only
+
+An existing entry's `expected-request.json` and `expected-request.sha256` are **frozen**. When a lane's request bytes change, add a **new entry**; never rewrite an old one. Rewriting an entry to match new code deletes exactly the evidence the gate exists to hold — those bytes are what the other client already ships. Retiring an entry (the lane exists on neither client) is a deliberate, separately reviewed removal, not a side effect of a code change.
+
+Current entries:
+
+- `example-canonical-serialization` — the structural example; also pins the frozen `GenerationConfig::metadata()` bytes.
+- `preset-structured-serialization` — the retired CAR-2252 slot/separator prompt shape, kept as a compatibility gate.
+- `structured-fields-response-schema` — the structured-Preset lane's declared `responseSchema` (`filename`, `tags`, `description`, `fields`, `missing_fields`), pinning both the contract property order and the Preset's own field order.
+
 ## Canonical serialization rules
 
 Both clients MUST serialize the request body identically. The canonical form is:
