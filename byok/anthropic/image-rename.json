@@ -1,0 +1,66 @@
+{
+  "endpoint": "POST /v1/messages",
+  "model": "claude-sonnet-4-6",
+  "name": "image-rename",
+  "request": {
+    "max_tokens": 12000,
+    "messages": [
+      {
+        "content": [
+          {
+            "text": "Answer for the attached document, as JSON matching the schema.",
+            "type": "text"
+          },
+          {
+            "source": {
+              "data": "/9j/4A==",
+              "media_type": "image/jpeg",
+              "type": "base64"
+            },
+            "type": "image"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "claude-sonnet-4-6",
+    "system": "Name this file.",
+    "thinking": {
+      "effort": "low",
+      "type": "adaptive"
+    },
+    "tool_choice": {
+      "type": "auto"
+    },
+    "tools": [
+      {
+        "description": "Record the answer for this request. Call this tool exactly once with the answer as its input.",
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "description": {
+              "type": "string"
+            },
+            "filename": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "filename",
+            "tags",
+            "description"
+          ],
+          "type": "object"
+        },
+        "name": "rename_metadata"
+      }
+    ]
+  },
+  "sha256": "910e1bde18a6fd2af0150f2b35da21f9e9fa1c565614084080028c1c88b24539"
+}

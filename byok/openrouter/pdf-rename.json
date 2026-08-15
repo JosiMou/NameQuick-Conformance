@@ -1,0 +1,63 @@
+{
+  "endpoint": "POST /api/v1/chat/completions",
+  "model": "google/gemini-2.5-flash-lite",
+  "name": "pdf-rename",
+  "request": {
+    "max_tokens": 12000,
+    "messages": [
+      {
+        "content": "Name this file.",
+        "role": "system"
+      },
+      {
+        "content": [
+          {
+            "text": "Answer for the attached document, as JSON matching the schema.",
+            "type": "text"
+          },
+          {
+            "file": {
+              "file_data": "data:application/pdf;base64,JVBERi0xLjUK",
+              "filename": "statement.pdf"
+            },
+            "type": "file"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "google/gemini-2.5-flash-lite",
+    "response_format": {
+      "json_schema": {
+        "name": "rename_metadata",
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "description": {
+              "type": "string"
+            },
+            "filename": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "filename",
+            "tags",
+            "description"
+          ],
+          "type": "object"
+        },
+        "strict": true
+      },
+      "type": "json_schema"
+    },
+    "stream": false
+  },
+  "sha256": "fbc3fe7cc686b356b68473449b49be1e24db6355e246c775a66ee8c95e14d91b"
+}

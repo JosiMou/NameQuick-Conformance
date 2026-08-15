@@ -1,0 +1,62 @@
+{
+  "endpoint": "POST /v1beta/models/{model}:generateContent",
+  "model": "gemini-3.5-flash",
+  "name": "image-rename",
+  "request": {
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "Answer for the attached document, as JSON matching the schema."
+          },
+          {
+            "inline_data": {
+              "data": "/9j/4A==",
+              "mime_type": "image/jpeg"
+            }
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "generationConfig": {
+      "max_output_tokens": 12000,
+      "response_mime_type": "application/json",
+      "response_schema": {
+        "properties": {
+          "description": {
+            "type": "STRING"
+          },
+          "filename": {
+            "type": "STRING"
+          },
+          "tags": {
+            "items": {
+              "type": "STRING"
+            },
+            "type": "ARRAY"
+          }
+        },
+        "required": [
+          "filename",
+          "tags",
+          "description"
+        ],
+        "type": "OBJECT"
+      },
+      "temperature": 0.2,
+      "thinkingConfig": {
+        "thinkingBudget": 0,
+        "thinkingLevel": "minimal"
+      }
+    },
+    "systemInstruction": {
+      "parts": [
+        {
+          "text": "Name this file."
+        }
+      ]
+    }
+  },
+  "sha256": "705766d18f835f5f9c179968f7b1c60c9051fbca46cb6eaef797149fb1672fac"
+}

@@ -1,0 +1,66 @@
+{
+  "endpoint": "POST /v1/messages",
+  "model": "claude-sonnet-4-6",
+  "name": "pdf-rename",
+  "request": {
+    "max_tokens": 12000,
+    "messages": [
+      {
+        "content": [
+          {
+            "text": "Answer for the attached document, as JSON matching the schema.",
+            "type": "text"
+          },
+          {
+            "source": {
+              "data": "JVBERi0xLjUK",
+              "media_type": "application/pdf",
+              "type": "base64"
+            },
+            "type": "document"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "claude-sonnet-4-6",
+    "system": "Name this file.",
+    "thinking": {
+      "effort": "low",
+      "type": "adaptive"
+    },
+    "tool_choice": {
+      "type": "auto"
+    },
+    "tools": [
+      {
+        "description": "Record the answer for this request. Call this tool exactly once with the answer as its input.",
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "description": {
+              "type": "string"
+            },
+            "filename": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "filename",
+            "tags",
+            "description"
+          ],
+          "type": "object"
+        },
+        "name": "rename_metadata"
+      }
+    ]
+  },
+  "sha256": "c18fca0111d6f2927fe3abb5daeb0e209993fc1349eacc68c3cfbd595764c067"
+}

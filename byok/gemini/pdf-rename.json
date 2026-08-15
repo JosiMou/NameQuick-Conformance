@@ -1,0 +1,62 @@
+{
+  "endpoint": "POST /v1beta/models/{model}:generateContent",
+  "model": "gemini-3.5-flash",
+  "name": "pdf-rename",
+  "request": {
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "Answer for the attached document, as JSON matching the schema."
+          },
+          {
+            "inline_data": {
+              "data": "JVBERi0xLjUK",
+              "mime_type": "application/pdf"
+            }
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "generationConfig": {
+      "max_output_tokens": 12000,
+      "response_mime_type": "application/json",
+      "response_schema": {
+        "properties": {
+          "description": {
+            "type": "STRING"
+          },
+          "filename": {
+            "type": "STRING"
+          },
+          "tags": {
+            "items": {
+              "type": "STRING"
+            },
+            "type": "ARRAY"
+          }
+        },
+        "required": [
+          "filename",
+          "tags",
+          "description"
+        ],
+        "type": "OBJECT"
+      },
+      "temperature": 0.2,
+      "thinkingConfig": {
+        "thinkingBudget": 0,
+        "thinkingLevel": "minimal"
+      }
+    },
+    "systemInstruction": {
+      "parts": [
+        {
+          "text": "Name this file."
+        }
+      ]
+    }
+  },
+  "sha256": "f4060a0de537efebba3aed1eea86f48e6c6c6608811bfd1f557ea4a02ad2568a"
+}

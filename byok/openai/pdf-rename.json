@@ -1,0 +1,63 @@
+{
+  "endpoint": "POST /v1/responses",
+  "model": "gpt-5.5",
+  "name": "pdf-rename",
+  "request": {
+    "input": [
+      {
+        "content": "Name this file.",
+        "role": "system"
+      },
+      {
+        "content": [
+          {
+            "text": "Answer for the attached document, as JSON matching the schema.",
+            "type": "input_text"
+          },
+          {
+            "file_data": "data:application/pdf;base64,JVBERi0xLjUK",
+            "filename": "statement.pdf",
+            "type": "input_file"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "max_output_tokens": 12000,
+    "model": "gpt-5.5",
+    "reasoning": {
+      "effort": "low"
+    },
+    "text": {
+      "format": {
+        "name": "rename_metadata",
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "description": {
+              "type": "string"
+            },
+            "filename": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "filename",
+            "tags",
+            "description"
+          ],
+          "type": "object"
+        },
+        "strict": true,
+        "type": "json_schema"
+      }
+    }
+  },
+  "sha256": "b9f138401b22186e483dc6225ad9fd2dcaa0afbd2b3ee8538a7edc6dabea731f"
+}

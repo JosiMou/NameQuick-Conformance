@@ -1,0 +1,62 @@
+{
+  "endpoint": "POST /v1/responses",
+  "model": "gpt-5.5",
+  "name": "image-rename",
+  "request": {
+    "input": [
+      {
+        "content": "Name this file.",
+        "role": "system"
+      },
+      {
+        "content": [
+          {
+            "text": "Answer for the attached document, as JSON matching the schema.",
+            "type": "input_text"
+          },
+          {
+            "image_url": "data:image/jpeg;base64,/9j/4A==",
+            "type": "input_image"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "max_output_tokens": 12000,
+    "model": "gpt-5.5",
+    "reasoning": {
+      "effort": "low"
+    },
+    "text": {
+      "format": {
+        "name": "rename_metadata",
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "description": {
+              "type": "string"
+            },
+            "filename": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "filename",
+            "tags",
+            "description"
+          ],
+          "type": "object"
+        },
+        "strict": true,
+        "type": "json_schema"
+      }
+    }
+  },
+  "sha256": "02a2fbfd4758877182ad0cd3e6c5ac0bf7af801b64dfb3312e1d447ca1247f41"
+}

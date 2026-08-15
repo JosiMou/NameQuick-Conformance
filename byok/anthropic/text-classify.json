@@ -1,0 +1,50 @@
+{
+  "endpoint": "POST /v1/messages",
+  "model": "claude-sonnet-4-6",
+  "name": "text-classify",
+  "request": {
+    "max_tokens": 12000,
+    "messages": [
+      {
+        "content": [
+          {
+            "text": "Rows: r1 Invoices, r2 Statements.",
+            "type": "text"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "claude-sonnet-4-6",
+    "system": "Decide which kind row claims this file.",
+    "thinking": {
+      "effort": "low",
+      "type": "adaptive"
+    },
+    "tool_choice": {
+      "type": "auto"
+    },
+    "tools": [
+      {
+        "description": "Record the answer for this request. Call this tool exactly once with the answer as its input.",
+        "input_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "kind_row_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "kind_row_id"
+          ],
+          "type": "object"
+        },
+        "name": "routing_classification"
+      }
+    ]
+  },
+  "sha256": "240c199795bb9b27f38388c96bae2932d6da82a51518c5cb31995fdfc8c94257"
+}

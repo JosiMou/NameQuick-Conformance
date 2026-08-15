@@ -1,0 +1,62 @@
+{
+  "endpoint": "POST /api/v1/chat/completions",
+  "model": "google/gemini-2.5-flash-lite",
+  "name": "image-rename",
+  "request": {
+    "max_tokens": 12000,
+    "messages": [
+      {
+        "content": "Name this file.",
+        "role": "system"
+      },
+      {
+        "content": [
+          {
+            "text": "Answer for the attached document, as JSON matching the schema.",
+            "type": "text"
+          },
+          {
+            "image_url": {
+              "url": "data:image/jpeg;base64,/9j/4A=="
+            },
+            "type": "image_url"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "google/gemini-2.5-flash-lite",
+    "response_format": {
+      "json_schema": {
+        "name": "rename_metadata",
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "description": {
+              "type": "string"
+            },
+            "filename": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "filename",
+            "tags",
+            "description"
+          ],
+          "type": "object"
+        },
+        "strict": true
+      },
+      "type": "json_schema"
+    },
+    "stream": false
+  },
+  "sha256": "8951b3be83d0e456aeea6621dab62c158055d608fed8ceafeffe284d746c244f"
+}

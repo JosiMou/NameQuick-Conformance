@@ -1,0 +1,46 @@
+{
+  "endpoint": "POST /v1beta/models/{model}:generateContent",
+  "model": "gemini-3.5-flash",
+  "name": "text-classify",
+  "request": {
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "Rows: r1 Invoices, r2 Statements."
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "generationConfig": {
+      "max_output_tokens": 12000,
+      "response_mime_type": "application/json",
+      "response_schema": {
+        "properties": {
+          "kind_row_id": {
+            "nullable": true,
+            "type": "STRING"
+          }
+        },
+        "required": [
+          "kind_row_id"
+        ],
+        "type": "OBJECT"
+      },
+      "temperature": 0.2,
+      "thinkingConfig": {
+        "thinkingBudget": 0,
+        "thinkingLevel": "minimal"
+      }
+    },
+    "systemInstruction": {
+      "parts": [
+        {
+          "text": "Decide which kind row claims this file."
+        }
+      ]
+    }
+  },
+  "sha256": "44569196e80e7d08c621b70f8c8c6aab75dbb7daa28f582dd5faf3463a077355"
+}

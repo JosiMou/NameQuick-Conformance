@@ -1,0 +1,50 @@
+{
+  "endpoint": "POST /v1/responses",
+  "model": "gpt-5.5",
+  "name": "text-classify",
+  "request": {
+    "input": [
+      {
+        "content": "Decide which kind row claims this file.",
+        "role": "system"
+      },
+      {
+        "content": [
+          {
+            "text": "Rows: r1 Invoices, r2 Statements.",
+            "type": "input_text"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "max_output_tokens": 12000,
+    "model": "gpt-5.5",
+    "reasoning": {
+      "effort": "low"
+    },
+    "text": {
+      "format": {
+        "name": "routing_classification",
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "kind_row_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "kind_row_id"
+          ],
+          "type": "object"
+        },
+        "strict": true,
+        "type": "json_schema"
+      }
+    }
+  },
+  "sha256": "9ac3abdc37dea1cb039d4c97b2e9b854b9579e10af723ccd849acbab5c2dd182"
+}

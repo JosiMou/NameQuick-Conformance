@@ -1,0 +1,48 @@
+{
+  "endpoint": "POST /api/v1/chat/completions",
+  "model": "google/gemini-2.5-flash-lite",
+  "name": "text-classify",
+  "request": {
+    "max_tokens": 12000,
+    "messages": [
+      {
+        "content": "Decide which kind row claims this file.",
+        "role": "system"
+      },
+      {
+        "content": [
+          {
+            "text": "Rows: r1 Invoices, r2 Statements.",
+            "type": "text"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "google/gemini-2.5-flash-lite",
+    "response_format": {
+      "json_schema": {
+        "name": "routing_classification",
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "kind_row_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "kind_row_id"
+          ],
+          "type": "object"
+        },
+        "strict": true
+      },
+      "type": "json_schema"
+    },
+    "stream": false
+  },
+  "sha256": "0b1775e0bffb08e2114b9e35ccb922b45f4ed2dfd36721b655415d029d0894ee"
+}
