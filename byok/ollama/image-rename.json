@@ -1,0 +1,51 @@
+{
+  "endpoint": "POST /api/chat",
+  "model": "gemma4:e2b-it-qat",
+  "name": "image-rename",
+  "request": {
+    "format": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "filename",
+        "tags",
+        "description"
+      ],
+      "type": "object"
+    },
+    "keep_alive": "5m",
+    "messages": [
+      {
+        "content": "Name this file.",
+        "role": "system"
+      },
+      {
+        "content": "Answer for the attached document, as JSON matching the schema.",
+        "images": [
+          "/9j/4A=="
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "gemma4:e2b-it-qat",
+    "options": {
+      "num_predict": 12000,
+      "temperature": 0.2
+    },
+    "stream": false
+  },
+  "sha256": "818a6bf93c662b0c4b13b65b8d5178c2dad548d029c106235161da8593b38087"
+}

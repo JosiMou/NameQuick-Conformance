@@ -1,0 +1,40 @@
+{
+  "endpoint": "POST /api/chat",
+  "model": "gemma4:e2b-it-qat",
+  "name": "text-classify",
+  "request": {
+    "format": {
+      "additionalProperties": false,
+      "properties": {
+        "kind_row_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "kind_row_id"
+      ],
+      "type": "object"
+    },
+    "keep_alive": "5m",
+    "messages": [
+      {
+        "content": "Decide which kind row claims this file.",
+        "role": "system"
+      },
+      {
+        "content": "Rows: r1 Invoices, r2 Statements.",
+        "role": "user"
+      }
+    ],
+    "model": "gemma4:e2b-it-qat",
+    "options": {
+      "num_predict": 12000,
+      "temperature": 0.2
+    },
+    "stream": false
+  },
+  "sha256": "3cfbcc9d3cd567baff75aa3dbf59ba0f4ccc36b2a514168efe75d7e1e096b55b"
+}

@@ -1,0 +1,48 @@
+{
+  "endpoint": "POST /api/chat",
+  "model": "gemma4:e2b-it-qat",
+  "name": "docx-rename",
+  "request": {
+    "format": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "filename",
+        "tags",
+        "description"
+      ],
+      "type": "object"
+    },
+    "keep_alive": "5m",
+    "messages": [
+      {
+        "content": "Name this file.",
+        "role": "system"
+      },
+      {
+        "content": "Answer for the attached document, as JSON matching the schema.\n\nInvoice 4471 from ACME GmbH",
+        "role": "user"
+      }
+    ],
+    "model": "gemma4:e2b-it-qat",
+    "options": {
+      "num_predict": 12000,
+      "temperature": 0.2
+    },
+    "stream": false
+  },
+  "sha256": "227c0b86c5a70b311bef5913beff1c1ab0500cf5d07e9121358045a7be7bfddc"
+}
