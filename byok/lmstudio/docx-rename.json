@@ -1,0 +1,58 @@
+{
+  "endpoint": "POST /v1/chat/completions",
+  "model": "google/gemma-4-e2b-qat",
+  "name": "docx-rename",
+  "request": {
+    "max_tokens": 12000,
+    "messages": [
+      {
+        "content": "Name this file.",
+        "role": "system"
+      },
+      {
+        "content": [
+          {
+            "text": "Answer for the attached document, as JSON matching the schema.\n\nInvoice 4471 from ACME GmbH",
+            "type": "text"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "google/gemma-4-e2b-qat",
+    "response_format": {
+      "json_schema": {
+        "name": "rename_metadata",
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "description": {
+              "type": "string"
+            },
+            "filename": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "filename",
+            "tags",
+            "description"
+          ],
+          "type": "object"
+        },
+        "strict": true
+      },
+      "type": "json_schema"
+    },
+    "stream": false,
+    "temperature": 0.2,
+    "ttl": 300
+  },
+  "sha256": "7d1816029fb28b087d807eabf422456d46c4db2ac2f3714e54f2dd9a6c251984"
+}

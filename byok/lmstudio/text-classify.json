@@ -1,0 +1,50 @@
+{
+  "endpoint": "POST /v1/chat/completions",
+  "model": "google/gemma-4-e2b-qat",
+  "name": "text-classify",
+  "request": {
+    "max_tokens": 12000,
+    "messages": [
+      {
+        "content": "Decide which kind row claims this file.",
+        "role": "system"
+      },
+      {
+        "content": [
+          {
+            "text": "Rows: r1 Invoices, r2 Statements.",
+            "type": "text"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "google/gemma-4-e2b-qat",
+    "response_format": {
+      "json_schema": {
+        "name": "routing_classification",
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "kind_row_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "kind_row_id"
+          ],
+          "type": "object"
+        },
+        "strict": true
+      },
+      "type": "json_schema"
+    },
+    "stream": false,
+    "temperature": 0.2,
+    "ttl": 300
+  },
+  "sha256": "4b3ce2f4acffd414ae8cb48f18f4fdcd2ec05a144c07077f07a0bfd36d3d5523"
+}
