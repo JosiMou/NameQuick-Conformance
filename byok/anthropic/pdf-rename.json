@@ -1,6 +1,6 @@
 {
   "endpoint": "POST /v1/messages",
-  "model": "claude-sonnet-4-6",
+  "model": "claude-sonnet-5",
   "name": "pdf-rename",
   "request": {
     "max_tokens": 12000,
@@ -23,14 +23,17 @@
         "role": "user"
       }
     ],
-    "model": "claude-sonnet-4-6",
+    "model": "claude-sonnet-5",
+    "output_config": {
+      "effort": "low"
+    },
     "system": "Name this file.",
     "thinking": {
-      "effort": "low",
       "type": "adaptive"
     },
     "tool_choice": {
-      "type": "auto"
+      "name": "rename_metadata",
+      "type": "tool"
     },
     "tools": [
       {
@@ -62,5 +65,5 @@
       }
     ]
   },
-  "sha256": "c18fca0111d6f2927fe3abb5daeb0e209993fc1349eacc68c3cfbd595764c067"
+  "sha256": "240f18748336e759efb1129d0f123c7169de3a87d9bd88adf3a8d9e6a9d09595"
 }

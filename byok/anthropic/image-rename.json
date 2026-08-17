@@ -1,6 +1,6 @@
 {
   "endpoint": "POST /v1/messages",
-  "model": "claude-sonnet-4-6",
+  "model": "claude-sonnet-5",
   "name": "image-rename",
   "request": {
     "max_tokens": 12000,
@@ -23,14 +23,17 @@
         "role": "user"
       }
     ],
-    "model": "claude-sonnet-4-6",
+    "model": "claude-sonnet-5",
+    "output_config": {
+      "effort": "low"
+    },
     "system": "Name this file.",
     "thinking": {
-      "effort": "low",
       "type": "adaptive"
     },
     "tool_choice": {
-      "type": "auto"
+      "name": "rename_metadata",
+      "type": "tool"
     },
     "tools": [
       {
@@ -62,5 +65,5 @@
       }
     ]
   },
-  "sha256": "910e1bde18a6fd2af0150f2b35da21f9e9fa1c565614084080028c1c88b24539"
+  "sha256": "2fef8c74e2defbcfa01b54b3d7bd043f42eee7bf5990de595a015f98f282b2c5"
 }

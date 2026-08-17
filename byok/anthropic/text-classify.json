@@ -1,6 +1,6 @@
 {
   "endpoint": "POST /v1/messages",
-  "model": "claude-sonnet-4-6",
+  "model": "claude-sonnet-5",
   "name": "text-classify",
   "request": {
     "max_tokens": 12000,
@@ -15,14 +15,17 @@
         "role": "user"
       }
     ],
-    "model": "claude-sonnet-4-6",
+    "model": "claude-sonnet-5",
+    "output_config": {
+      "effort": "low"
+    },
     "system": "Decide which kind row claims this file.",
     "thinking": {
-      "effort": "low",
       "type": "adaptive"
     },
     "tool_choice": {
-      "type": "auto"
+      "name": "routing_classification",
+      "type": "tool"
     },
     "tools": [
       {
@@ -46,5 +49,5 @@
       }
     ]
   },
-  "sha256": "240c199795bb9b27f38388c96bae2932d6da82a51518c5cb31995fdfc8c94257"
+  "sha256": "5dfb23384b335af14deecdf5620e4725f2286fc20c0451e42da2bc45cc43b52c"
 }

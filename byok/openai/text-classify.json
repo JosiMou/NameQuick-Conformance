@@ -1,6 +1,6 @@
 {
   "endpoint": "POST /v1/responses",
-  "model": "gpt-5.5",
+  "model": "gpt-5.6-terra",
   "name": "text-classify",
   "request": {
     "input": [
@@ -19,7 +19,7 @@
       }
     ],
     "max_output_tokens": 12000,
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-terra",
     "reasoning": {
       "effort": "low"
     },
@@ -46,5 +46,5 @@
       }
     }
   },
-  "sha256": "9ac3abdc37dea1cb039d4c97b2e9b854b9579e10af723ccd849acbab5c2dd182"
+  "sha256": "d4d617aedfbee0b448737fa00f9784491683bc304c2ffa6c2e847031e15e05c5"
 }

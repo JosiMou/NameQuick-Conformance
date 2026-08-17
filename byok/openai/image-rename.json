@@ -1,6 +1,6 @@
 {
   "endpoint": "POST /v1/responses",
-  "model": "gpt-5.5",
+  "model": "gpt-5.6-terra",
   "name": "image-rename",
   "request": {
     "input": [
@@ -23,7 +23,7 @@
       }
     ],
     "max_output_tokens": 12000,
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-terra",
     "reasoning": {
       "effort": "low"
     },
@@ -58,5 +58,5 @@
       }
     }
   },
-  "sha256": "02a2fbfd4758877182ad0cd3e6c5ac0bf7af801b64dfb3312e1d447ca1247f41"
+  "sha256": "f47cb90746d97c0b970facc3049eba6d650a4bd7f4e934acb3c3c11a401a024e"
 }
