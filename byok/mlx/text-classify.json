@@ -1,0 +1,49 @@
+{
+  "endpoint": "POST /v1/chat/completions",
+  "model": "mlx-community/Qwen3-1.7B-4bit",
+  "name": "text-classify",
+  "request": {
+    "max_tokens": 12000,
+    "messages": [
+      {
+        "content": "Decide which kind row claims this file.",
+        "role": "system"
+      },
+      {
+        "content": [
+          {
+            "text": "Rows: r1 Invoices, r2 Statements.",
+            "type": "text"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "mlx-community/Qwen3-1.7B-4bit",
+    "response_format": {
+      "json_schema": {
+        "name": "routing_classification",
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "kind_row_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "kind_row_id"
+          ],
+          "type": "object"
+        },
+        "strict": true
+      },
+      "type": "json_schema"
+    },
+    "stream": false,
+    "temperature": 0.2
+  },
+  "sha256": "553994efc3cc51e048f69ca57ea56f7954c03cb4cc8f9bcd6cf51e9c11a2b5be"
+}
