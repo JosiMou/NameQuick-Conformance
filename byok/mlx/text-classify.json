@@ -1,6 +1,6 @@
 {
   "endpoint": "POST /v1/chat/completions",
-  "model": "mlx-community/Qwen3-1.7B-4bit",
+  "model": "mlx-community/gemma-4-e2b-it-4bit",
   "name": "text-classify",
   "request": {
     "max_tokens": 12000,
@@ -19,7 +19,7 @@
         "role": "user"
       }
     ],
-    "model": "mlx-community/Qwen3-1.7B-4bit",
+    "model": "mlx-community/gemma-4-e2b-it-4bit",
     "response_format": {
       "json_schema": {
         "name": "routing_classification",
@@ -45,5 +45,5 @@
     "stream": false,
     "temperature": 0.2
   },
-  "sha256": "553994efc3cc51e048f69ca57ea56f7954c03cb4cc8f9bcd6cf51e9c11a2b5be"
+  "sha256": "eea48fa522aba0bfa9f556efcf0caa13f5b1cef41e1d72ecfe214720bc90c62d"
 }

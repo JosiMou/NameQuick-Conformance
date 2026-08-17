@@ -1,6 +1,6 @@
 {
   "endpoint": "POST /v1/chat/completions",
-  "model": "mlx-community/Qwen3-1.7B-4bit",
+  "model": "mlx-community/gemma-4-e2b-it-4bit",
   "name": "pdf-rename",
   "request": {
     "max_tokens": 12000,
@@ -19,7 +19,7 @@
         "role": "user"
       }
     ],
-    "model": "mlx-community/Qwen3-1.7B-4bit",
+    "model": "mlx-community/gemma-4-e2b-it-4bit",
     "response_format": {
       "json_schema": {
         "name": "rename_metadata",
@@ -53,5 +53,5 @@
     "stream": false,
     "temperature": 0.2
   },
-  "sha256": "9b4fdb3f2d50cb41e2d39783cbd47352dd10d42232877cbf1f7ac407741cf2c4"
+  "sha256": "667d42c43e11e9ed972968c570170f3c3cbf2de2419dc5de93a29b4934c9e901"
 }

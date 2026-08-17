@@ -1,6 +1,6 @@
 {
   "endpoint": "POST /v1/chat/completions",
-  "model": "mlx-community/Qwen3-1.7B-4bit",
+  "model": "mlx-community/gemma-4-e2b-it-4bit",
   "name": "image-rename",
   "request": {
     "max_tokens": 12000,
@@ -25,7 +25,7 @@
         "role": "user"
       }
     ],
-    "model": "mlx-community/Qwen3-1.7B-4bit",
+    "model": "mlx-community/gemma-4-e2b-it-4bit",
     "response_format": {
       "json_schema": {
         "name": "rename_metadata",
@@ -59,5 +59,5 @@
     "stream": false,
     "temperature": 0.2
   },
-  "sha256": "d79df3898cf9be00a2c3b00cf11bd34aa0e9f1822623e8ccec8ff9c09782d7ba"
+  "sha256": "31c0816e081d851f935481a3236c1f77eb5205e8c531fa369920efebfc5f76a9"
 }
