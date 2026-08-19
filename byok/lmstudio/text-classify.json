@@ -3,7 +3,7 @@
   "model": "google/gemma-4-e2b-qat",
   "name": "text-classify",
   "request": {
-    "max_tokens": 12000,
+    "max_tokens": 1024,
     "messages": [
       {
         "content": "Decide which kind row claims this file.",
@@ -46,5 +46,5 @@
     "temperature": 0.2,
     "ttl": 300
   },
-  "sha256": "4b3ce2f4acffd414ae8cb48f18f4fdcd2ec05a144c07077f07a0bfd36d3d5523"
+  "sha256": "9736322b9cc31f95de4c544a06e57aa0c4ae7f305ef2d7743a3f0c7a88f4a416"
 }

@@ -3,7 +3,7 @@
   "model": "google/gemma-4-e2b-qat",
   "name": "docx-rename",
   "request": {
-    "max_tokens": 12000,
+    "max_tokens": 1024,
     "messages": [
       {
         "content": "Name this file.",
@@ -54,5 +54,5 @@
     "temperature": 0.2,
     "ttl": 300
   },
-  "sha256": "7d1816029fb28b087d807eabf422456d46c4db2ac2f3714e54f2dd9a6c251984"
+  "sha256": "a600f799ce5c375760b2368796ed18186bf4ca41ada47953ed4c0d941d149c5b"
 }

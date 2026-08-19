@@ -3,7 +3,7 @@
   "model": "mlx-community/gemma-4-e2b-it-4bit",
   "name": "text-classify",
   "request": {
-    "max_tokens": 12000,
+    "max_tokens": 1024,
     "messages": [
       {
         "content": "Decide which kind row claims this file.",
@@ -45,5 +45,5 @@
     "stream": false,
     "temperature": 0.2
   },
-  "sha256": "eea48fa522aba0bfa9f556efcf0caa13f5b1cef41e1d72ecfe214720bc90c62d"
+  "sha256": "b9208d25ce39ac1b961e190f8c575d99d83b309e6d72c55ef063867525acc9d8"
 }

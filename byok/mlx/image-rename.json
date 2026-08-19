@@ -3,7 +3,7 @@
   "model": "mlx-community/gemma-4-e2b-it-4bit",
   "name": "image-rename",
   "request": {
-    "max_tokens": 12000,
+    "max_tokens": 1024,
     "messages": [
       {
         "content": "Name this file.",
@@ -59,5 +59,5 @@
     "stream": false,
     "temperature": 0.2
   },
-  "sha256": "31c0816e081d851f935481a3236c1f77eb5205e8c531fa369920efebfc5f76a9"
+  "sha256": "7ba0e382d4b9e681d8f25d15c6299ebb6f01279d6653b7421e75e7f1bead7cb2"
 }

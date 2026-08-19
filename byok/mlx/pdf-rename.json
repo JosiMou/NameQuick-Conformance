@@ -3,7 +3,7 @@
   "model": "mlx-community/gemma-4-e2b-it-4bit",
   "name": "pdf-rename",
   "request": {
-    "max_tokens": 12000,
+    "max_tokens": 1024,
     "messages": [
       {
         "content": "Name this file.",
@@ -53,5 +53,5 @@
     "stream": false,
     "temperature": 0.2
   },
-  "sha256": "667d42c43e11e9ed972968c570170f3c3cbf2de2419dc5de93a29b4934c9e901"
+  "sha256": "5c0d1f77524e380dcd02474c1fb695f62edeab817c919caede47df3aa4d9e7db"
 }

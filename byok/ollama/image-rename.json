@@ -42,11 +42,11 @@
     ],
     "model": "gemma4:e2b-it-qat",
     "options": {
-      "num_predict": 12000,
+      "num_predict": 1024,
       "temperature": 0.2
     },
     "stream": false,
     "think": false
   },
-  "sha256": "fb58b845d58e8a0c5c3fec84fd70ecb17038d222d90e322bf5a2be65aee2e0eb"
+  "sha256": "8c2bc788003f066cf7ec2295de8b0f543da4b27f70cacad55ba49b029c249b53"
 }

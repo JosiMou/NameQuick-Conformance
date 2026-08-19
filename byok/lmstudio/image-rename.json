@@ -3,7 +3,7 @@
   "model": "google/gemma-4-e2b-qat",
   "name": "image-rename",
   "request": {
-    "max_tokens": 12000,
+    "max_tokens": 1024,
     "messages": [
       {
         "content": "Name this file.",
@@ -60,5 +60,5 @@
     "temperature": 0.2,
     "ttl": 300
   },
-  "sha256": "c14b185eedcabf45b477e2c1fa7daa77d6f9e2dfe61de02d903de5b039b92267"
+  "sha256": "2deffde3bb5753bd62ea6441c069f23b1f9a4ddf416a0c6bf5fcc1d43cb7ca67"
 }
