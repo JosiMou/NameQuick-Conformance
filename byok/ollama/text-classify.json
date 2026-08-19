@@ -34,7 +34,8 @@
       "num_predict": 12000,
       "temperature": 0.2
     },
-    "stream": false
+    "stream": false,
+    "think": false
   },
-  "sha256": "3cfbcc9d3cd567baff75aa3dbf59ba0f4ccc36b2a514168efe75d7e1e096b55b"
+  "sha256": "f9290b1112ee428509e1e523e4f66748799070d0891dcc831d308e4ac873a90f"
 }
