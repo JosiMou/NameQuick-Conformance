@@ -30,7 +30,10 @@
               "type": "string"
             },
             "filename": {
-              "type": "string"
+              "type": [
+                "string",
+                "null"
+              ]
             },
             "tags": {
               "items": {
@@ -53,5 +56,5 @@
     "stream": false,
     "temperature": 0.2
   },
-  "sha256": "5c0d1f77524e380dcd02474c1fb695f62edeab817c919caede47df3aa4d9e7db"
+  "sha256": "6a07cab5189583580f77c0e6d2f2b514a743c40ec9d22f7cb4a90437d0a1098f"
 }

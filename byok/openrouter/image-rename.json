@@ -36,7 +36,10 @@
               "type": "string"
             },
             "filename": {
-              "type": "string"
+              "type": [
+                "string",
+                "null"
+              ]
             },
             "tags": {
               "items": {
@@ -58,5 +61,5 @@
     },
     "stream": false
   },
-  "sha256": "8951b3be83d0e456aeea6621dab62c158055d608fed8ceafeffe284d746c244f"
+  "sha256": "d86bd93add3d8ec9325306a925db02dc4227d90d46e0c444d5724ac7522b0168"
 }
