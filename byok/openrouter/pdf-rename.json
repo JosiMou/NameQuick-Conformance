@@ -27,6 +27,9 @@
       }
     ],
     "model": "google/gemini-2.5-flash-lite",
+    "provider": {
+      "data_collection": "deny"
+    },
     "response_format": {
       "json_schema": {
         "name": "rename_metadata",
@@ -62,5 +65,5 @@
     },
     "stream": false
   },
-  "sha256": "cebb1f2499f82483dd956a12826b30f2077daebf851fc7eab1da08607445c6bf"
+  "sha256": "da5c67e3f3450d2f8d1e3cff0823b49c7140574d1e50840810b1594ad1d227c3"
 }
