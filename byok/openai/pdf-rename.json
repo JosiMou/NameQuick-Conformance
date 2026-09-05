@@ -28,6 +28,7 @@
     "reasoning": {
       "effort": "low"
     },
+    "store": false,
     "text": {
       "format": {
         "name": "rename_metadata",
@@ -62,5 +63,5 @@
       }
     }
   },
-  "sha256": "9efdb1fdcab71f0e67c4da9d2c3bcd19af30a82bdef3d9f7a5a2ff35901701e5"
+  "sha256": "33c982ad72b197af3d658e79710c9adadd44dca7844b99d480e2965d776f179f"
 }

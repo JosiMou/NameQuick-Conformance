@@ -23,6 +23,7 @@
     "reasoning": {
       "effort": "low"
     },
+    "store": false,
     "text": {
       "format": {
         "name": "routing_classification",
@@ -46,5 +47,5 @@
       }
     }
   },
-  "sha256": "d4d617aedfbee0b448737fa00f9784491683bc304c2ffa6c2e847031e15e05c5"
+  "sha256": "ba8d4e59b6a58b05173a0184d5b76d5d48b501093d89a2127b5fb11d0f464f39"
 }
