@@ -30,7 +30,6 @@
       },
       "temperature": 0.2,
       "thinkingConfig": {
-        "thinkingBudget": 0,
         "thinkingLevel": "minimal"
       }
     },
@@ -42,5 +41,5 @@
       ]
     }
   },
-  "sha256": "44569196e80e7d08c621b70f8c8c6aab75dbb7daa28f582dd5faf3463a077355"
+  "sha256": "a36e2a1b78deaaedbfb08d54f91c12e15540c90bd1c116e6079a86dc6fd12565"
 }
