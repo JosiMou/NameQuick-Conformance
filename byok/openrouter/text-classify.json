@@ -22,7 +22,8 @@
     "model": "google/gemini-2.5-flash-lite",
     "provider": {
       "data_collection": "deny",
-      "require_parameters": true
+      "require_parameters": true,
+      "zdr": true
     },
     "response_format": {
       "json_schema": {
@@ -48,5 +49,5 @@
     },
     "stream": false
   },
-  "sha256": "9a75a807dbde02d40506166588ba18e01f4c6e9fdafeb253dc7b63b8d4d8f584"
+  "sha256": "acf73ebccdc2cca917c0cba1efe6f3d32aefee06842e87ac83295afedfe54f50"
 }
