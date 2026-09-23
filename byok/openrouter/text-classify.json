@@ -1,6 +1,6 @@
 {
   "endpoint": "POST /api/v1/chat/completions",
-  "model": "google/gemini-2.5-flash-lite",
+  "model": "google/gemini-3.8-flash",
   "name": "text-classify",
   "request": {
     "max_tokens": 12000,
@@ -19,11 +19,14 @@
         "role": "user"
       }
     ],
-    "model": "google/gemini-2.5-flash-lite",
+    "model": "google/gemini-3.8-flash",
     "provider": {
       "data_collection": "deny",
       "require_parameters": true,
       "zdr": true
+    },
+    "reasoning": {
+      "effort": "low"
     },
     "response_format": {
       "json_schema": {
@@ -49,5 +52,5 @@
     },
     "stream": false
   },
-  "sha256": "acf73ebccdc2cca917c0cba1efe6f3d32aefee06842e87ac83295afedfe54f50"
+  "sha256": "fae075e0e9eb10664601b038960276c7bebab03bf2c11e01f8f7174441e18ec5"
 }

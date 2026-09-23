@@ -1,6 +1,6 @@
 {
   "endpoint": "POST /api/v1/chat/completions",
-  "model": "google/gemini-2.5-flash-lite",
+  "model": "google/gemini-3.8-flash",
   "name": "pdf-rename",
   "request": {
     "max_tokens": 12000,
@@ -26,11 +26,14 @@
         "role": "user"
       }
     ],
-    "model": "google/gemini-2.5-flash-lite",
+    "model": "google/gemini-3.8-flash",
     "provider": {
       "data_collection": "deny",
       "require_parameters": true,
       "zdr": true
+    },
+    "reasoning": {
+      "effort": "low"
     },
     "response_format": {
       "json_schema": {
@@ -67,5 +70,5 @@
     },
     "stream": false
   },
-  "sha256": "70ddae5420ec50e107f633074c8148f2c4cd88205b3662804de544fd4ffcaeb7"
+  "sha256": "5d99917e9022fe244f02c8b70719303e22b4e73f5ce8afa53521148b14040c9d"
 }

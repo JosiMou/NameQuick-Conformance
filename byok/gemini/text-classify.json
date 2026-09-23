@@ -1,6 +1,6 @@
 {
   "endpoint": "POST /v1beta/models/{model}:generateContent",
-  "model": "gemini-3.5-flash",
+  "model": "gemini-3.8-flash",
   "name": "text-classify",
   "request": {
     "contents": [
@@ -28,9 +28,8 @@
         ],
         "type": "OBJECT"
       },
-      "temperature": 0.2,
       "thinkingConfig": {
-        "thinkingLevel": "minimal"
+        "thinkingLevel": "low"
       }
     },
     "systemInstruction": {
@@ -41,5 +40,5 @@
       ]
     }
   },
-  "sha256": "a36e2a1b78deaaedbfb08d54f91c12e15540c90bd1c116e6079a86dc6fd12565"
+  "sha256": "74ef2a59d72d02e23cc09a9acfd4450f2f0eb2afe39debc341aa17e5743a17f2"
 }

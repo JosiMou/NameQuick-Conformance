@@ -1,6 +1,6 @@
 {
   "endpoint": "POST /v1beta/models/{model}:generateContent",
-  "model": "gemini-3.5-flash",
+  "model": "gemini-3.8-flash",
   "name": "pdf-rename",
   "request": {
     "contents": [
@@ -45,9 +45,8 @@
         ],
         "type": "OBJECT"
       },
-      "temperature": 0.2,
       "thinkingConfig": {
-        "thinkingLevel": "minimal"
+        "thinkingLevel": "low"
       }
     },
     "systemInstruction": {
@@ -58,5 +57,5 @@
       ]
     }
   },
-  "sha256": "4032645d1b92eb35a2c3c44a7a7bde462f860a25801e6a6c6a749246eac78928"
+  "sha256": "0389b3f7d2dc9db87da201995378d3d5fad57da9771ef47c6034a6fb8e6cc766"
 }

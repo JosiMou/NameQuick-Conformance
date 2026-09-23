@@ -1,6 +1,6 @@
 {
   "endpoint": "POST /v1beta/models/{model}:generateContent",
-  "model": "gemini-3.5-flash",
+  "model": "gemini-3.8-flash",
   "name": "image-rename",
   "request": {
     "contents": [
@@ -45,9 +45,8 @@
         ],
         "type": "OBJECT"
       },
-      "temperature": 0.2,
       "thinkingConfig": {
-        "thinkingLevel": "minimal"
+        "thinkingLevel": "low"
       }
     },
     "systemInstruction": {
@@ -58,5 +57,5 @@
       ]
     }
   },
-  "sha256": "d02e8179ad94d533f7127737414393efccf1f39ae26fe569ed18774db9370d23"
+  "sha256": "d9fccfce2e56dbab450ca419ffb66b018ebcc88d1f6bab3cea4ad0dd862fc856"
 }

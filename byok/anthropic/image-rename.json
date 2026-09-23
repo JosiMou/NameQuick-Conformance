@@ -25,20 +25,9 @@
     ],
     "model": "claude-sonnet-5",
     "output_config": {
-      "effort": "low"
-    },
-    "system": "Name this file.",
-    "thinking": {
-      "type": "adaptive"
-    },
-    "tool_choice": {
-      "name": "rename_metadata",
-      "type": "tool"
-    },
-    "tools": [
-      {
-        "description": "Record the answer for this request. Call this tool exactly once with the answer as its input.",
-        "input_schema": {
+      "effort": "low",
+      "format": {
+        "schema": {
           "additionalProperties": false,
           "properties": {
             "description": {
@@ -64,9 +53,13 @@
           ],
           "type": "object"
         },
-        "name": "rename_metadata"
+        "type": "json_schema"
       }
-    ]
+    },
+    "system": "Name this file.",
+    "thinking": {
+      "type": "adaptive"
+    }
   },
-  "sha256": "48abca2b6b4ff8130922741ba4e5b2557955a9c304ba93ce954812ff25f59271"
+  "sha256": "1c1f898483def99b081f4955cf0dc8205b022e01c4ed24ac22ecf4f6e9e65fac"
 }
